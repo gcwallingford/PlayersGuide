@@ -13,7 +13,7 @@ public class Game
         Console.WriteLine(input2);
         
         
-        do
+        while (City.Health != 0 || Blimp.Health != 0)
         {
             if (input2 == input1)
             {
@@ -21,7 +21,6 @@ public class Game
                 Blimp.Health--;
                 City.Health--;
                 input2 = Convert.ToInt32(Console.ReadLine());
-                break;
             }
 
             if (input2 < input1)
@@ -37,6 +36,6 @@ public class Game
                 City.Health--;
                 input2 = Convert.ToInt32(Console.ReadLine());
             }
-        } while (City.Health != 0 || Blimp.Health != 0);
+        }
     }
 }

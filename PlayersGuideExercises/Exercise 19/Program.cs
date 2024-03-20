@@ -2,12 +2,15 @@
 
 Game game = new();
 game.GameFunction();
-if (game.blimp.health == 0)
+if (game.Blimp.Health == 0)
 {
     Console.WriteLine("Congratulations! You Win!");
 }
-
-if (game.city.health == 0)
+else if (game.City.Health == 0)
+{
+    Console.WriteLine("Sorry, you've lost.");
+}
+else if (game.City.Health == 0 && game.Blimp.Health == 0)
 {
     Console.WriteLine("Sorry, you've lost.");
 }

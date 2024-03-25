@@ -49,36 +49,36 @@ public class Arrow
         return finalArrow;
     }
 
-    public float ArrowPrice(Arrow inputArrow)
+    public float ArrowPrice()
     {
         float price = 0;
-        if (inputArrow._arrowhead == Arrowhead.Steel)
+        if (_arrowhead == Arrowhead.Steel)
         {
             price += 10;
         }
-        else if (inputArrow._arrowhead == Arrowhead.Wood)
+        else if (_arrowhead == Arrowhead.Wood)
         {
             price += 3;
         }
-        else if (inputArrow._arrowhead == Arrowhead.Obsidian)
+        else if (_arrowhead == Arrowhead.Obsidian)
         {
             price += 5;
         }
 
-        if (inputArrow._fletching == Fletching.Plastic)
+        if (_fletching == Fletching.Plastic)
         {
             price += 10;
         }
-        else if (inputArrow._fletching == Fletching.Goose)
+        else if (_fletching == Fletching.Goose)
         {
             price += 3;
         }
-        else if (inputArrow._fletching == Fletching.Turkey)
+        else if (_fletching == Fletching.Turkey)
         {
             price += 5;
         }
 
-        float lengthCost = inputArrow._length * 0.05f;
+        float lengthCost = _length * 0.05f;
         price += lengthCost;
         return price;
     }

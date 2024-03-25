@@ -5,5 +5,6 @@ public enum Arrowhead
     Steel,
     Wood,
     Obsidian,
-    Empty
+    Empty,
+    Ruby
 }

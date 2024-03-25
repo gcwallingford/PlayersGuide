@@ -16,6 +16,7 @@
  int shaftInput = Convert.ToInt32(Console.ReadLine());
  
  Arrow arrow = Arrow.BuildArrow(arrowheadInput, fletchingInput, shaftInput);
- float arrowPrice = arrow.ArrowPrice(arrow);
+ float arrowPrice = arrow.ArrowPrice();
+ 
  Console.WriteLine("Your arrow costs " + arrowPrice +" gold.");
  

@@ -5,9 +5,9 @@ public class Cave
     public Room[,] cave = new Room[4,4];
     public Cave()
     {
-        for (int rows = 0; rows < 3; rows++)
+        for (int rows = 0; rows < 4; rows++)
         {
-            for (int columns = 0; columns < 3; columns++)
+            for (int columns = 0; columns < 4; columns++)
             {
                 cave[rows, columns] = Room.Empty;
             }
@@ -30,5 +30,6 @@ public class Cave
         {
             cave[row, column] = Room.Fountain;
         }
+        Console.WriteLine($"For testing purposes, the fountain is at ({row}, {column})");
     }
 }

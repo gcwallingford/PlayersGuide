@@ -1,2 +1,7 @@
-﻿Console.WriteLine("You enter the first room");
-Console.WriteLine("(0,0)");
+﻿using _34;
+
+Console.WriteLine("You enter the first room");
+
+Game game = new();
+
+game.MenuDisplay();

@@ -1,7 +1,6 @@
 ﻿using _34;
 
+Game game = new();
 Console.WriteLine("You enter the first room");
 
-Game game = new();
-
-game.MenuDisplay();
+game.GameMenuDisplay();

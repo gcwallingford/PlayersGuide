@@ -1,15 +1,49 @@
+using System.Security.Cryptography.X509Certificates;
+
 namespace _34;
 
 public class Game
 {
-    private Cave _cave = new Cave();
+    
     private int _currentRow;
     private int _currentColumn;
     private bool _fountainActive;
+    private Cave _cave;
 
-    public void MenuDisplay()
+    public Game()
+    {
+        string? gameSize = StartMenu();
+        switch (gameSize.ToLower())
+        {
+            case "small":
+                _cave = new Cave(4);
+                _cave.InitializeCave();
+                break;
+            case "medium":
+                _cave = new Cave(6);
+                _cave.InitializeCave();
+                break;
+            case "large":
+                _cave = new Cave(8);
+                _cave.InitializeCave();
+                break;
+        }
+    }
+
+    public string? StartMenu()
+    {
+        Console.WriteLine("Would you like to play a");
+        Console.WriteLine("Small World");
+        Console.WriteLine("Medium World");
+        Console.WriteLine("Large World");
+        string? input = Console.ReadLine();
+        return input;
+    }
+
+    public void GameMenuDisplay()
     {
         Console.WriteLine($"You are in room ({_currentRow}, {_currentColumn})");
+        DetectAdjacentPit();
         Console.WriteLine("What would you like to do?");
         Console.WriteLine("(Move) rooms");
         Console.WriteLine("(Enable) the fountain");
@@ -17,17 +51,16 @@ public class Game
         Console.WriteLine("(Leave) the cave");
         
         string? input = Console.ReadLine()?.ToLower();
-        MenuFunction(input);
+        GameMenuFunction(input);
     }
 
-    public void MenuFunction(string? input)
+    public void GameMenuFunction(string? input)
     {
         switch (input)
         {
             case "move":
                 Console.WriteLine("What direction would you like to move in?");
-                string direction = Console.ReadLine().ToLower();
-                MoveRooms(direction);
+                MoveRooms(ConvertStringToDirection(Console.ReadLine()));
                 break;
             case "enable":
                 EnableFountain();
@@ -41,44 +74,48 @@ public class Game
         }
     }
 
-    public void MoveRooms(string direction)
+    public void MoveRooms(Direction direction)
     {
-        switch (direction)
+        switch ((int)direction)
         {
-            case "north":
+            case 0:
                 if (_currentRow > 0)
                 {
                     _currentRow--;
+                    DetectInPit();
                 }
                 else
                 {
                     MoveRoomDenied();
                 }
                 break;
-            case "south":
-                if (_currentRow < 3)
+            case 1:
+                if (_currentRow < _cave.Size)
                 {
                     _currentRow++;
+                    DetectInPit();
                 }
                 else
                 {
                     MoveRoomDenied();
                 }
                 break;
-            case "east":
-                if (_currentColumn < 3)
+            case 2:
+                if (_currentColumn < _cave.Size)
                 {
                     _currentColumn++;
+                    DetectInPit();
                 }
                 else
                 {
                     MoveRoomDenied();
                 }
                 break;
-            case "west" :
+            case 3 :
                 if (_currentColumn > 0)
                 {
                     _currentColumn--;
+                    DetectInPit();
                 }
                 else
                 {
@@ -88,14 +125,14 @@ public class Game
         }
 
         Console.Clear();
-        MenuDisplay();
+        GameMenuDisplay();
     }
 
     public void MoveRoomDenied()
     {
         Console.Clear();
         Console.WriteLine("You cannot go in that direction");
-        MenuDisplay();
+        GameMenuDisplay();
     }
 
     public void EnableFountain()
@@ -110,7 +147,7 @@ public class Game
         {
             Console.WriteLine("You must find the fountain first!");
         }
-        MenuDisplay();
+        GameMenuDisplay();
     }
     
     public void LeaveCave()
@@ -141,6 +178,102 @@ public class Game
                 break;
         }
         
-        MenuDisplay();
+        GameMenuDisplay();
+    }
+
+    public void DetectAdjacentPit()
+    {
+        if (_cave.cave[++_currentRow, _currentColumn] == Room.Pit ||
+            _cave.cave[_currentRow, ++_currentColumn] == Room.Pit ||
+            _cave.cave[--_currentRow, _currentColumn] == Room.Pit ||
+            _cave.cave[_currentRow, --_currentColumn] == Room.Pit)
+        {
+            Console.WriteLine("There is a draft in this room. There must be a pit in an adjacent room");
+        }
+    }
+
+    public void DetectInPit()
+    {
+        if (_cave.cave[_currentRow, _currentColumn] == Room.Pit)
+        {
+            Console.Clear();
+            Console.WriteLine("You've fallen into a pit and died. Game Over.");
+        }
+    }
+
+    public void DetectMaelstrom(Maelstrom maelstrom)
+    {
+        if (maelstrom.EnemyCurrentRow == _currentRow && maelstrom.EnemyCurrentColumn == _currentColumn)
+        {
+            maelstrom.MaelstromTeleportPlayer(this);
+        }
+    }
+
+    public Direction ConvertStringToDirection(string input)
+    {
+        Direction output = Direction.North;
+        input.ToLower();
+        switch (input)
+        {
+            case "north":
+                output = Direction.North;
+                break;
+            case "south":
+                output = Direction.South;
+                break;
+            case "east":
+                output = Direction.East;
+                break;
+            case "west":
+                output = Direction.West;
+                break;
+        }
+        return output;
+    }
+
+    public bool AdjacentRoomPit()
+    {
+        int size = _cave.Size;
+        bool pitNearRoom = false;
+        if (_currentRow == 0)
+        {
+            if (_cave.cave[++_currentRow, _currentColumn] == Room.Pit ||
+                _cave.cave[_currentRow, ++_currentColumn] == Room.Pit ||
+                _cave.cave[_currentRow, --_currentColumn] == Room.Pit)
+            {
+                pitNearRoom = true;
+            }
+        }
+
+        if (_currentRow == size)
+        {
+            if (_cave.cave[_currentRow, ++_currentColumn] == Room.Pit ||
+                _cave.cave[_currentRow, --_currentColumn] == Room.Pit ||
+                _cave.cave[--_currentRow, _currentColumn] == Room.Pit)
+            {
+                pitNearRoom = true;
+            }
+        }
+        
+        if (_currentColumn == 0)
+        {
+            if (_cave.cave[_currentRow, ++_currentColumn] == Room.Pit ||
+                _cave.cave[++_currentRow, _currentColumn] == Room.Pit ||
+                _cave.cave[--_currentRow, _currentColumn] == Room.Pit)
+            {
+                pitNearRoom = true;
+            }
+        }
+        
+        if (_currentColumn == size)
+        {
+            if (_cave.cave[_currentRow, --_currentColumn] == Room.Pit ||
+                _cave.cave[++_currentRow, _currentColumn] == Room.Pit ||
+                _cave.cave[--_currentRow, _currentColumn] == Room.Pit)
+            {
+                pitNearRoom = true;
+            }
+        }
+        return pitNearRoom;
     }
 }

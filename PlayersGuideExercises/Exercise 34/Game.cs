@@ -8,6 +8,7 @@ public class Game
     private int _currentRow;
     private int _currentColumn;
     private bool _fountainActive;
+    private bool _isGameOver;
     private Cave _cave;
 
     public Game()
@@ -42,16 +43,29 @@ public class Game
 
     public void GameMenuDisplay()
     {
-        Console.WriteLine($"You are in room ({_currentRow}, {_currentColumn})");
-        DetectAdjacentPit();
-        Console.WriteLine("What would you like to do?");
-        Console.WriteLine("(Move) rooms");
-        Console.WriteLine("(Enable) the fountain");
-        Console.WriteLine("(Look) around the room");
-        Console.WriteLine("(Leave) the cave");
+        while (_isGameOver == false)
+        {
+            DoAllDetectHazards();
+            Console.WriteLine($"You are in room ({_currentRow}, {_currentColumn})");
+            Console.WriteLine("What would you like to do?");
+            Console.WriteLine("(Move) rooms");
+            Console.WriteLine("(Enable) the fountain");
+            Console.WriteLine("(Look) around the room");
+            Console.WriteLine("(Leave) the cave");
         
-        string? input = Console.ReadLine()?.ToLower();
-        GameMenuFunction(input);
+            string? input = Console.ReadLine()?.ToLower();
+            GameMenuFunction(input);
+        }
+    }
+
+    public void DoAllDetectHazards()
+    {
+        DetectAdjacentPit();
+        DetectInPit();
+        AdjacentAmarokDetection();
+        AmarokDetection();
+        MaelstromDetection();
+        DetectGameOver(_isGameOver);
     }
 
     public void GameMenuFunction(string? input)
@@ -82,7 +96,6 @@ public class Game
                 if (_currentRow > 0)
                 {
                     _currentRow--;
-                    DetectInPit();
                 }
                 else
                 {
@@ -93,7 +106,6 @@ public class Game
                 if (_currentRow < _cave.Size)
                 {
                     _currentRow++;
-                    DetectInPit();
                 }
                 else
                 {
@@ -104,7 +116,6 @@ public class Game
                 if (_currentColumn < _cave.Size)
                 {
                     _currentColumn++;
-                    DetectInPit();
                 }
                 else
                 {
@@ -115,7 +126,6 @@ public class Game
                 if (_currentColumn > 0)
                 {
                     _currentColumn--;
-                    DetectInPit();
                 }
                 else
                 {
@@ -197,15 +207,94 @@ public class Game
         if (_cave.cave[_currentRow, _currentColumn] == Room.Pit)
         {
             Console.Clear();
-            Console.WriteLine("You've fallen into a pit and died. Game Over.");
+            Console.WriteLine("You've fallen into a pit and died.");
+            _isGameOver = true;
         }
     }
 
-    public void DetectMaelstrom(Maelstrom maelstrom)
+    public void MaelstromDetection()
+    {
+        switch (_cave.Size)
+        {
+            case 4:
+                DetectIndividualMaelstrom(_cave._maelstrom1);
+
+                break;
+            case 6:
+                DetectIndividualMaelstrom(_cave._maelstrom1);
+                DetectIndividualMaelstrom(_cave._maelstrom2);
+                break;
+            case 8:
+                DetectIndividualMaelstrom(_cave._maelstrom1);
+                DetectIndividualMaelstrom(_cave._maelstrom2);
+                DetectIndividualMaelstrom(_cave._maelstrom3);
+                break;
+        }
+    }
+    
+    public void DetectIndividualMaelstrom(Maelstrom maelstrom)
     {
         if (maelstrom.EnemyCurrentRow == _currentRow && maelstrom.EnemyCurrentColumn == _currentColumn)
         {
             maelstrom.MaelstromTeleportPlayer(this);
+        }
+    }
+
+    public void AmarokDetection()
+    {
+        switch (_cave.Size)
+        {
+            case 4:
+                DetectIndividualAmarok(_cave._amarok1);
+                break;
+            case 6:
+                DetectIndividualAmarok(_cave._amarok1);
+                DetectIndividualAmarok(_cave._amarok2);
+                break;
+            case 8:
+                DetectIndividualAmarok(_cave._amarok1);
+                DetectIndividualAmarok(_cave._amarok2);
+                DetectIndividualAmarok(_cave._amarok3);
+                break;
+        }
+    }
+    public void DetectIndividualAmarok(Amarok amarok)
+    {
+        _isGameOver = amarok.EnemyCurrentRow == _currentRow && amarok.EnemyCurrentColumn == _currentColumn;
+    }
+
+    public void DetectAdjacentAmarok(Amarok amarok)
+    {
+        if (amarok.EnemyCurrentRow == _currentRow || amarok.EnemyCurrentColumn == _currentColumn)
+        {
+            Console.WriteLine("There is a foul stench in this room. There must be an Amarok in an adjacent room");
+        }
+    }
+    
+    public void AdjacentAmarokDetection()
+    {
+        switch (_cave.Size)
+        {
+            case 4:
+                DetectAdjacentAmarok(_cave._amarok1);
+                break;
+            case 6:
+                DetectAdjacentAmarok(_cave._amarok1);
+                DetectAdjacentAmarok(_cave._amarok2);
+                break;
+            case 8:
+                DetectAdjacentAmarok(_cave._amarok1);
+                DetectAdjacentAmarok(_cave._amarok2);
+                DetectAdjacentAmarok(_cave._amarok3);
+                break;
+        }
+    }
+
+    public void DetectGameOver(bool isGameOver)
+    {
+        if (isGameOver)
+        {
+            Console.WriteLine("GAME OVER");
         }
     }
 
@@ -276,4 +365,6 @@ public class Game
         }
         return pitNearRoom;
     }
+    
+    
 }

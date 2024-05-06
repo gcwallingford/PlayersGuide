@@ -13,4 +13,13 @@ public class Maelstrom(int enemyCurrentRow, int enemyCurrentColumn) : Enemy(enem
         Direction direction = (Direction)Random.Shared.Next(0, 4);
         game.MoveRooms(direction);
     }
+
+}
+
+public class Amarok(int enemyCurrentRow, int enemyCurrentColumn) : Enemy(enemyCurrentRow, enemyCurrentColumn)
+{
+    public void AmarokGameOver(Game game)
+    {
+        
+    }
 }

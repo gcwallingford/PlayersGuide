@@ -4,10 +4,13 @@ public class Cave(int size)
 {
     public Room[,] cave;
     public int Size = size;
-    
-    Maelstrom _maelstrom1;
-    Maelstrom _maelstrom2;
-    Maelstrom _maelstrom3;
+
+    public Maelstrom _maelstrom1;
+    public Maelstrom _maelstrom2;
+    public Maelstrom _maelstrom3;
+    public Amarok _amarok1;
+    public Amarok _amarok2;
+    public Amarok _amarok3;
     
     
     public void InitializeCave()
@@ -20,12 +23,15 @@ public class Cave(int size)
             case 4:
                 cave[1, 1] = Room.Pit;
                 _maelstrom1 = new Maelstrom(2, 2);
+                _amarok1 = new Amarok(1, 1);
                 break;
             case 6:
                 cave[4, 1] = Room.Pit;
                 cave[1, 4] = Room.Pit;
                 _maelstrom1 = new Maelstrom(2, 2);
                 _maelstrom2 = new Maelstrom(3, 3);
+                _amarok1 = new Amarok(3, 2);
+                _amarok2 = new Amarok(2, 3);
 
                 break;
             case 8:
@@ -36,6 +42,9 @@ public class Cave(int size)
                 _maelstrom1 = new Maelstrom(1, 2);
                 _maelstrom2 = new Maelstrom(2, 3);
                 _maelstrom3 = new Maelstrom(3, 4);
+                _amarok1 = new Amarok(7, 1);
+                _amarok2 = new Amarok(1, 7);
+                _amarok3 = new Amarok(3, 3);
 
                 break;
         }

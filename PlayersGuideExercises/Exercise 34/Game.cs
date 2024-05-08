@@ -4,7 +4,6 @@ namespace _34;
 
 public class Game
 {
-    
     private int _currentRow;
     private int _currentColumn;
     private bool _fountainActive;
@@ -43,7 +42,7 @@ public class Game
 
     public void GameMenuDisplay()
     {
-        while (_isGameOver == false)
+        do
         {
             DoAllDetectHazards();
             Console.WriteLine($"You are in room ({_currentRow}, {_currentColumn})");
@@ -52,10 +51,11 @@ public class Game
             Console.WriteLine("(Enable) the fountain");
             Console.WriteLine("(Look) around the room");
             Console.WriteLine("(Leave) the cave");
-        
+
             string? input = Console.ReadLine()?.ToLower();
             GameMenuFunction(input);
-        }
+        } while (_isGameOver == false);
+
     }
 
     public void DoAllDetectHazards()
@@ -63,7 +63,7 @@ public class Game
         DetectAdjacentPit();
         DetectInPit();
         AdjacentAmarokDetection();
-        AmarokDetection();
+        AmarokDetection(); 
         MaelstromDetection();
         DetectGameOver(_isGameOver);
     }
@@ -85,7 +85,91 @@ public class Game
             case "look":
                 Look();
                 break;
+            case "shoot":
+                Console.WriteLine("What direction would you like to shoot in?");
+                ShootRoom(ConvertStringToDirection(Console.ReadLine()));
+                break;
         }
+    }
+
+    private void ShootRoom(Direction direction)
+    {
+        DetectAllEnemies(direction);
+    }
+
+    private void DetectAllEnemies(Direction aimDirection)
+    {
+        bool maelstrom1InRoom = EnemyInRoom(CavePositionToDirection(_cave._maelstrom1), aimDirection);
+        bool maelstrom2InRoom = EnemyInRoom(CavePositionToDirection(_cave._maelstrom2), aimDirection);
+        bool maelstrom3InRoom = EnemyInRoom(CavePositionToDirection(_cave._maelstrom3), aimDirection);
+        bool amarok1InRoom = EnemyInRoom(CavePositionToDirection(_cave._amarok1), aimDirection);
+        bool amarok2InRoom = EnemyInRoom(CavePositionToDirection(_cave._amarok2), aimDirection);
+        bool amarok3InRoom = EnemyInRoom(CavePositionToDirection(_cave._amarok3), aimDirection);
+        if (maelstrom1InRoom == true)
+        {
+            _cave._maelstrom1.EnemyCurrentRow = 9;
+            _cave._maelstrom1.EnemyCurrentColumn = 9;
+        }
+        if (maelstrom2InRoom == true)
+        {
+            _cave._maelstrom2.EnemyCurrentRow = 9;
+            _cave._maelstrom2.EnemyCurrentColumn = 9;
+        }
+        if (maelstrom3InRoom == true)
+        {
+            _cave._maelstrom3.EnemyCurrentRow = 9;
+            _cave._maelstrom3.EnemyCurrentColumn = 9;
+        }
+        if (amarok1InRoom == true)
+        {
+            _cave._amarok1.EnemyCurrentRow = 9;
+            _cave._amarok1.EnemyCurrentColumn = 9;
+        }
+        if (amarok2InRoom == true)
+        {
+            _cave._amarok2.EnemyCurrentRow = 9;
+            _cave._amarok2.EnemyCurrentColumn = 9;
+        }
+        if (amarok3InRoom == true)
+        {
+            _cave._amarok3.EnemyCurrentRow = 9;
+            _cave._amarok3.EnemyCurrentColumn = 9;
+        }
+    }
+    
+    
+
+    private bool EnemyInRoom(Direction enemyDirection, Direction aimDirection)
+    {
+        bool enemyInRoom = aimDirection == enemyDirection;
+        return enemyInRoom;
+    }
+
+    private Direction CavePositionToDirection(Enemy enemy)
+    {
+        Direction outputDirection = Direction.North;
+        if (enemy.EnemyCurrentRow == _currentRow && enemy.EnemyCurrentColumn == _currentColumn - 1)
+        {
+            outputDirection = Direction.North;
+        }
+        else if (enemy.EnemyCurrentRow == _currentRow && enemy.EnemyCurrentColumn == _currentColumn + 1)
+        {
+            outputDirection = Direction.South;
+        }
+        else if (enemy.EnemyCurrentRow == _currentRow - 1 && enemy.EnemyCurrentColumn == _currentColumn)
+        {
+            outputDirection = Direction.West;
+        }
+        else if (enemy.EnemyCurrentRow == _currentRow + 1 && enemy.EnemyCurrentColumn == _currentColumn)
+        {
+            outputDirection = Direction.East;
+        }
+        else
+        {
+            outputDirection = Direction.Far;
+        }
+
+        return outputDirection;
     }
 
     public void MoveRooms(Direction direction)
@@ -193,10 +277,15 @@ public class Game
 
     public void DetectAdjacentPit()
     {
-        if (_cave.cave[++_currentRow, _currentColumn] == Room.Pit ||
-            _cave.cave[_currentRow, ++_currentColumn] == Room.Pit ||
-            _cave.cave[--_currentRow, _currentColumn] == Room.Pit ||
-            _cave.cave[_currentRow, --_currentColumn] == Room.Pit)
+        var below = _currentRow + 1 == _cave.Size ? _cave.Size - 1 : _currentRow + 1;
+        var right = _currentColumn + 1 == _cave.Size ? _cave.Size - 1 : _currentColumn + 1;
+        var above = _currentRow - 1 < 0 ? 0 : _currentRow - 1;
+        var left = _currentColumn - 1 < 0 ? 0 : _currentColumn - 1;
+
+        if (_cave.cave[below, _currentColumn] == Room.Pit ||
+            _cave.cave[_currentRow, right] == Room.Pit ||
+            _cave.cave[above, _currentColumn] == Room.Pit ||
+            _cave.cave[_currentRow, left] == Room.Pit)
         {
             Console.WriteLine("There is a draft in this room. There must be a pit in an adjacent room");
         }
@@ -238,6 +327,10 @@ public class Game
         {
             maelstrom.MaelstromTeleportPlayer(this);
         }
+        else
+        {
+            Console.WriteLine("There is no maelstrom in this room.");
+        }
     }
 
     public void AmarokDetection()
@@ -260,7 +353,14 @@ public class Game
     }
     public void DetectIndividualAmarok(Amarok amarok)
     {
-        _isGameOver = amarok.EnemyCurrentRow == _currentRow && amarok.EnemyCurrentColumn == _currentColumn;
+        if (amarok.EnemyCurrentRow == _currentRow && amarok.EnemyCurrentColumn == _currentColumn)
+        {
+            _isGameOver = true;
+        }
+        else
+        {
+            _isGameOver = false;
+        }
     }
 
     public void DetectAdjacentAmarok(Amarok amarok)

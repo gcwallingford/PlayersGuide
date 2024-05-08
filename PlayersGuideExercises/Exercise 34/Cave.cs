@@ -15,7 +15,7 @@ public class Cave(int size)
     
     public void InitializeCave()
     {
-        cave = new Room[Size,Size];
+        cave = new Room[9,9];
 
         
         switch (Size)

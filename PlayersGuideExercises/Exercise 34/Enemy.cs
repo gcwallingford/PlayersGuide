@@ -1,9 +1,9 @@
 namespace _34;
 
-public class Enemy(int enemyCurrentRow, int enemyCurrentColumn)
+public abstract class Enemy(int enemyCurrentRow, int enemyCurrentColumn)
 {
-    public int EnemyCurrentRow { get; set; }
-    public int EnemyCurrentColumn { get; set; }
+    public int EnemyCurrentRow { get; set; } = enemyCurrentRow;
+    public int EnemyCurrentColumn { get; set; } = enemyCurrentColumn;
 }
 
 public class Maelstrom(int enemyCurrentRow, int enemyCurrentColumn) : Enemy(enemyCurrentRow, enemyCurrentColumn)
@@ -18,8 +18,5 @@ public class Maelstrom(int enemyCurrentRow, int enemyCurrentColumn) : Enemy(enem
 
 public class Amarok(int enemyCurrentRow, int enemyCurrentColumn) : Enemy(enemyCurrentRow, enemyCurrentColumn)
 {
-    public void AmarokGameOver(Game game)
-    {
-        
-    }
+    
 }

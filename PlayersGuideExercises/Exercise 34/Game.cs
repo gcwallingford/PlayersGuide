@@ -1,5 +1,3 @@
-using System.Security.Cryptography.X509Certificates;
-
 namespace _34;
 
 public class Game
@@ -13,7 +11,7 @@ public class Game
     public Game()
     {
         string? gameSize = StartMenu();
-        switch (gameSize.ToLower())
+        switch (gameSize?.ToLower())
         {
             case "small":
                 _cave = new Cave(4);
@@ -51,6 +49,7 @@ public class Game
             Console.WriteLine("(Enable) the fountain");
             Console.WriteLine("(Look) around the room");
             Console.WriteLine("(Leave) the cave");
+            Console.WriteLine("(Shoot) into a nearby room");
 
             string? input = Console.ReadLine()?.ToLower();
             GameMenuFunction(input);
@@ -105,35 +104,65 @@ public class Game
         bool amarok1InRoom = EnemyInRoom(CavePositionToDirection(_cave._amarok1), aimDirection);
         bool amarok2InRoom = EnemyInRoom(CavePositionToDirection(_cave._amarok2), aimDirection);
         bool amarok3InRoom = EnemyInRoom(CavePositionToDirection(_cave._amarok3), aimDirection);
-        if (maelstrom1InRoom == true)
+        if (maelstrom1InRoom)
         {
             _cave._maelstrom1.EnemyCurrentRow = 9;
             _cave._maelstrom1.EnemyCurrentColumn = 9;
+            Console.WriteLine("There was an enemy in that room! The room is safe now.");
         }
-        if (maelstrom2InRoom == true)
+        else
+        {
+            Console.WriteLine("Nothing seems to have changed.");
+        }
+        if (maelstrom2InRoom)
         {
             _cave._maelstrom2.EnemyCurrentRow = 9;
             _cave._maelstrom2.EnemyCurrentColumn = 9;
+            Console.WriteLine("There was an enemy in that room! The room is safe now.");
         }
-        if (maelstrom3InRoom == true)
+        else
+        {
+            Console.WriteLine("Nothing seems to have changed.");
+        }
+        if (maelstrom3InRoom)
         {
             _cave._maelstrom3.EnemyCurrentRow = 9;
-            _cave._maelstrom3.EnemyCurrentColumn = 9;
+            _cave._maelstrom3.EnemyCurrentColumn = 9;        
+            Console.WriteLine("There was an enemy in that room! The room is safe now.");
         }
-        if (amarok1InRoom == true)
+        else
+        {
+            Console.WriteLine("Nothing seems to have changed.");
+        }
+        if (amarok1InRoom)
         {
             _cave._amarok1.EnemyCurrentRow = 9;
             _cave._amarok1.EnemyCurrentColumn = 9;
+            Console.WriteLine("There was an enemy in that room! The room is safe now.");
         }
-        if (amarok2InRoom == true)
+        else
+        {
+            Console.WriteLine("Nothing seems to have changed.");
+        }
+        if (amarok2InRoom)
         {
             _cave._amarok2.EnemyCurrentRow = 9;
             _cave._amarok2.EnemyCurrentColumn = 9;
+            Console.WriteLine("There was an enemy in that room! The room is safe now.");
         }
-        if (amarok3InRoom == true)
+        else
+        {
+            Console.WriteLine("Nothing seems to have changed.");
+        }
+        if (amarok3InRoom)
         {
             _cave._amarok3.EnemyCurrentRow = 9;
             _cave._amarok3.EnemyCurrentColumn = 9;
+            Console.WriteLine("There was an enemy in that room! The room is safe now.");
+        }
+        else
+        {
+            Console.WriteLine("Nothing seems to have changed.");
         }
     }
     
@@ -147,7 +176,7 @@ public class Game
 
     private Direction CavePositionToDirection(Enemy enemy)
     {
-        Direction outputDirection = Direction.North;
+        Direction outputDirection;
         if (enemy.EnemyCurrentRow == _currentRow && enemy.EnemyCurrentColumn == _currentColumn - 1)
         {
             outputDirection = Direction.North;
@@ -401,7 +430,7 @@ public class Game
     public Direction ConvertStringToDirection(string input)
     {
         Direction output = Direction.North;
-        input.ToLower();
+        input = input.ToLower();
         switch (input)
         {
             case "north":

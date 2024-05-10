@@ -18,8 +18,5 @@ public class Maelstrom(int enemyCurrentRow, int enemyCurrentColumn) : Enemy(enem
 
 public class Amarok(int enemyCurrentRow, int enemyCurrentColumn) : Enemy(enemyCurrentRow, enemyCurrentColumn)
 {
-    public void PlaceholderMethod()
-    {
-        Console.WriteLine("needed multiple types of enemy, the ide kept bugging me about an empty class");
-    }
+   
 }

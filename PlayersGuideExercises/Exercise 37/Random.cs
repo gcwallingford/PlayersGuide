@@ -5,7 +5,7 @@ public static class Random
     public static double NextDouble(double maxValue)
     {
         System.Random random = new System.Random();
-        double result = random.NextDouble();
+        double result = random.Next((int)(maxValue - 1)) + random.NextDouble();
         return result;
     }
 
